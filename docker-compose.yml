@@ -1,0 +1,23 @@
+version: '3.9'
+services:
+  prom:
+    image: prom/prometheus
+    container_name: prometheus
+    restart: always
+    volumes:
+      - ${PWD}/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prom_data:/prometheus
+    ports:
+      - 9090:9090
+  node_exporter:
+    image: carlosedp/node-exporter:latest
+    container_name: node_exporter
+    restart: always
+    ports:
+      - "9100:9100"
+volumes:
+  prom_data:
+networks:
+  default:
+    external: true
+    name: qzsec-net
