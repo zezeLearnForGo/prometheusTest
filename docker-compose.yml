@@ -9,6 +9,25 @@ services:
       - prom_data:/prometheus
     ports:
       - 9090:9090
+    command:
+      - '--enable-feature=remote-write-receiver'
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  prom2:
+    image: prom/prometheus
+    container_name: prometheus2
+    restart: always
+    volumes:
+      - ${PWD}/prometheus2.yml:/etc/prometheus/prometheus.yml:ro
+      - test_data:/prometheus
+    ports:
+      - 9099:9090
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command:
+      - '--enable-feature=remote-write-receiver'
+      - '--config.file=/etc/prometheus/prometheus.yml'
   node_exporter:
     image: carlosedp/node-exporter:latest
     container_name: node_exporter
@@ -16,6 +35,7 @@ services:
     ports:
       - "9100:9100"
 volumes:
+  test_data:
   prom_data:
 networks:
   default:
